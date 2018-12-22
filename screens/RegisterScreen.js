@@ -43,7 +43,7 @@ export default class RegisterScreen extends React.Component {
     this.setState({
       ended
     })
-    this.props.onEnd(this.state.started, ended)
+    console.log('type session', this.props.navigation.state.params.type)
   }
   state = {}
   render () {
