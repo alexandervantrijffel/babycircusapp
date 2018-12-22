@@ -10,8 +10,69 @@ import {
   View,
   WebView
 } from 'react-native'
+import { connect } from 'react-redux'
+import { Duration } from 'luxon'
+import { toTime, formatDuration } from '../lib/timehelpers'
+import Row from '../components/grid/row'
 
-export default class StartScreen extends React.Component {
+class Timer extends React.Component {
+  state = { since: 0 }
+  timer = 0
+  componentDidMount () {
+    if (this.timer == 0) {
+      this.timer = setInterval(this.onTick, 1000)
+    }
+  }
+  onTick = () => {
+    if (!this.props.lastSession) return
+    const diff = new Date() - new Date(this.props.lastSession.ended)
+    const duration = formatDuration(Duration.fromMillis(diff))
+    if (duration !== this.state.since) {
+      this.setState({ since: duration })
+    }
+  }
+  render () {
+    return (
+      <View style={{ left: 20 }}>
+        {this.state.since != 0 && (
+          <Text>
+            Last {this.props.type}: {this.state.since}
+          </Text>
+        )}
+      </View>
+    )
+  }
+}
+
+const StatusOverview = ({ type, title, label, sessions, navigate }) => {
+  const filt = sessions
+    .filter(s => s.type === type)
+    .sort((a, b) => a.ended - b.ended)
+  let last = null
+  if (filt.length) {
+    last = filt.slice(-1)[0]
+  }
+  return (
+    <Row>
+      <View style={{ width: '50%' }}>
+        <View style={styles.buttonContainer}>
+          <Button
+            onPress={() => navigate('Register', { type })}
+            title={title}
+            color='#e3e0cf'
+            accessibilityLabel={label}
+            style={styles.textStyle}
+          />
+        </View>
+      </View>
+      <View style={{ width: '50%', paddingTop: 28 }}>
+        {last && <Timer type={type} lastSession={last} />}
+      </View>
+    </Row>
+  )
+}
+
+class StartScreen extends React.Component {
   static navigationOptions = {
     title: 'Baby Circus',
     headerStyle: {
@@ -25,45 +86,37 @@ export default class StartScreen extends React.Component {
     }
   }
   render () {
-    const { navigate } = this.props.navigation
+    const { navigation: { navigate }, sessions } = this.props
     return (
       <View style={styles.container}>
-        <View style={styles.buttonContainer}>
-          <Button
-            onPress={() => navigate('Register', { type: 'feed' })}
-            title='Feed'
-            color='#e3e0cf'
-            accessibilityLabel='Register feeding'
-            style={styles.textStyle}
-          />
-        </View>
-        <View style={styles.buttonContainer}>
-          <Button
-            onPress={() => navigate('Register', { type: 'diaper' })}
-            title='Diaper'
-            color='#e3e0cf'
-            accessibilityLabel='Register diaper change'
-            style={styles.textStyle}
-          />
-        </View>
-        <View style={styles.buttonContainer}>
-          <Button
-            onPress={() => navigate('Register', { type: 'sleep' })}
-            title='Sleep'
-            color='#e3e0cf'
-            accessibilityLabel='Register sleep'
-            style={styles.textStyle}
-          />
-        </View>
-        <View style={styles.buttonContainer}>
-          <Button
-            onPress={() => navigate('Register', { type: 'massage' })}
-            title='Massage'
-            color='#e3e0cf'
-            accessibilityLabel='Register massage'
-            style={styles.textStyle}
-          />
-        </View>
+        <StatusOverview
+          type='feed'
+          title='Feed'
+          label='Register feeding'
+          sessions={sessions}
+          navigate={navigate}
+        />
+        <StatusOverview
+          type='diaper'
+          title='Diaper'
+          label='Register diaper change'
+          sessions={sessions}
+          navigate={navigate}
+        />
+        <StatusOverview
+          type='sleep'
+          title='Sleep'
+          label='Register sleep'
+          sessions={sessions}
+          navigate={navigate}
+        />
+        <StatusOverview
+          type='massage'
+          title='Massage'
+          label='Register massage'
+          sessions={sessions}
+          navigate={navigate}
+        />
       </View>
     )
   }
@@ -88,3 +141,9 @@ const styles = StyleSheet.create({
     color: '#3b3a36'
   }
 })
+
+const mapStateToProps = ({ sessions }) => ({
+  sessions
+})
+const mapDispatchToProps = {}
+export default connect(mapStateToProps, mapDispatchToProps)(StartScreen)

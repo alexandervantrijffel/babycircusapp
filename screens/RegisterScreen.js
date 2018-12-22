@@ -11,21 +11,12 @@ import {
   WebView
 } from 'react-native'
 import { DateTime, Duration } from 'luxon'
+import { connect } from 'react-redux'
+import { addSession, forgetSession } from '../reducers'
+import { toTime, formatDuration } from '../lib/timehelpers'
+import Row from '../components/grid/row'
 
-const toDateTime = date => {
-  return DateTime.fromJSDate(date).toFormat('DD HH:mm:ss')
-}
-const toTime = date => {
-  return DateTime.fromJSDate(date).toFormat('HH:mm:ss')
-}
-const formatDuration = duration => {
-  const sec = duration.as('seconds')
-  if (Number(sec) < 60) {
-    return duration.toFormat(`s's'`)
-  }
-  return duration.toFormat(`m'm' s's'`)
-}
-export default class RegisterScreen extends React.Component {
+class RegisterScreen extends React.Component {
   static navigationOptions = {
     title: 'Baby Circus > Register',
     headerStyle: {
@@ -38,14 +29,27 @@ export default class RegisterScreen extends React.Component {
       flex: 1
     }
   }
+  state = {}
   onEnd = () => {
     ended = new Date()
     this.setState({
       ended
     })
-    console.log('type session', this.props.navigation.state.params.type)
+    const type =
+      (this.props.navigation.state.params &&
+        this.props.navigation.state.params.type) ||
+      'feed'
+    console.log('type session', type)
+    this.props.addSession({
+      type,
+      started: this.state.started,
+      ended
+    })
   }
-  state = {}
+  onForget = () => {
+    this.setState({ started: null, ended: null })
+    this.props.forgetSession()
+  }
   render () {
     const { navigate } = this.props.navigation
     let { started, ended } = this.state
@@ -66,7 +70,6 @@ export default class RegisterScreen extends React.Component {
                   title='Start'
                   color='#e3e0cf'
                   accessibilityLabel='Start feeding'
-                  style={styles.textStyle}
                 />
               </View>
             )}
@@ -87,7 +90,6 @@ export default class RegisterScreen extends React.Component {
                   title={!ended ? 'End' : 'New end'}
                   color='#e3e0cf'
                   accessibilityLabel='Start feeding'
-                  style={styles.textStyle}
                 />
               </View>
             )}
@@ -106,27 +108,34 @@ export default class RegisterScreen extends React.Component {
             <Text style={{ left: 24 }}>The session has been recorded</Text>
           </Row>
         )}
-        <Row>
-          {started && (
-            <View style={styles.buttonContainer}>
-              <Button
-                onPress={() => this.setState({ started: null, ended: null })}
-                title='Forget'
-                color='#e3e0cf'
-                accessibilityLabel='Undo this session'
-                style={styles.textStyle}
-              />
-            </View>
-          )}
-        </Row>
+        {hasCompleted && (
+          <View>
+            <Row>
+              <View style={styles.buttonContainer}>
+                <Button
+                  onPress={e => navigate('Start')}
+                  title='Start screen'
+                  color='#e3e0cf'
+                  accessibilityLabel='Back to the start screen'
+                />
+              </View>
+            </Row>
+            <Row>
+              <View style={styles.buttonContainer}>
+                <Button
+                  onPress={this.onForget}
+                  title='Forget'
+                  color='#e3e0cf'
+                  accessibilityLabel='Undo this session'
+                />
+              </View>
+            </Row>
+          </View>
+        )}
       </View>
     )
   }
 }
-
-const Row = ({ children }) => (
-  <View style={{ flexDirection: 'row', borderWidth: 0 }}>{children}</View>
-)
 
 const styles = StyleSheet.create({
   container: {
@@ -141,10 +150,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     // backgroundColor: '#b3c2bf',
     backgroundColor: '#e3e0cf',
+    // color: '#3b3a36'
     width: 120
-  },
-  textStyle: {
-    color: '#3b3a36'
   },
   rightCol: {
     marginTop: 24,
@@ -153,3 +160,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   }
 })
+
+const mapStateToProps = ({ sessions }) => ({
+  sessions
+})
+
+const mapDispatchToProps = {
+  addSession,
+  forgetSession
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(RegisterScreen)

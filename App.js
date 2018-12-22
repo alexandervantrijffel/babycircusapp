@@ -1,10 +1,27 @@
 import React from 'react'
-import { Platform, StatusBar, StyleSheet, View } from 'react-native'
+import { Platform, StatusBar, StyleSheet, Text, View } from 'react-native'
 import { AppLoading, Asset, Font, Icon } from 'expo'
 import AppNavigator from './navigation/AppNavigator'
 import InitApollo from './initapollo'
 import { createStackNavigator, createAppContainer } from 'react-navigation'
-import HomeScreen from './screens/HomeScreen'
+import { createStore } from 'redux'
+import { Provider } from 'react-redux'
+import { persistStore, persistReducer } from 'redux-persist'
+import { PersistGate } from 'redux-persist/integration/react'
+import storage from 'redux-persist/lib/storage'
+import rootReducer from './reducers'
+
+const persistConfig = {
+  key: 'root',
+  storage
+}
+
+// info https://github.com/rt2zz/redux-persist
+const persistedReducer = persistReducer(persistConfig, rootReducer)
+let store = createStore(persistedReducer)
+
+// todo, we are not using this persistor???
+let persistor = persistStore(store)
 
 export default class App extends React.Component {
   state = {
@@ -22,12 +39,19 @@ export default class App extends React.Component {
       )
     }
     return (
-      <InitApollo>
-        <View style={styles.container}>
-          {Platform.OS === 'ios' && <StatusBar barStyle='default' />}
-          <AppNavigator />
-        </View>
-      </InitApollo>
+      <Provider store={store}>
+        <PersistGate
+          loading={<Text>Loading store...</Text>}
+          persistor={persistor}
+        >
+          <InitApollo>
+            <View style={styles.container}>
+              {Platform.OS === 'ios' && <StatusBar barStyle='default' />}
+              <AppNavigator />
+            </View>
+          </InitApollo>
+        </PersistGate>
+      </Provider>
     )
   }
 
