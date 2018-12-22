@@ -33,11 +33,12 @@ class Timer extends React.Component {
   }
   render () {
     return (
-      <View style={{ left: 20 }}>
+      <View style={{ left: 20, flex: 1 }}>
         {this.state.since != 0 && (
-          <Text>
-            Last {this.props.type}: {this.state.since}
-          </Text>
+          <View style={{ flex: 1, flexDirection: 'row' }}>
+            <Text style={{ minWidth: 100 }}>Last {this.props.type}:</Text>
+            <Text>{this.state.since} ago</Text>
+          </View>
         )}
       </View>
     )
@@ -54,7 +55,7 @@ const StatusOverview = ({ type, title, label, sessions, navigate }) => {
   }
   return (
     <Row>
-      <View style={{ width: '50%' }}>
+      <View style={{ width: '40%' }}>
         <View style={styles.buttonContainer}>
           <Button
             onPress={() => navigate('Register', { type })}
@@ -65,7 +66,7 @@ const StatusOverview = ({ type, title, label, sessions, navigate }) => {
           />
         </View>
       </View>
-      <View style={{ width: '50%', paddingTop: 28 }}>
+      <View style={{ width: '60%', paddingTop: 28 }}>
         {last && <Timer type={type} lastSession={last} />}
       </View>
     </Row>
