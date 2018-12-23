@@ -51,7 +51,8 @@ const StatusOverview = ({ type, title, label, sessions, navigate }) => {
           </View>
         )}
       </View>
-      {last.source && (
+      {last &&
+        last.source && (
         <BreastBadge source={last.source} wrapperStyle={{ paddingTop: 24 }} />
       )}
       <View style={{ paddingTop: 24, width: 40 }}>
