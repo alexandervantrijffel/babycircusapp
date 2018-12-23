@@ -1,11 +1,12 @@
 export default function reducer (state = { sessions: [] }, action) {
-  console.log('onReduce', action)
+  // console.log('onReduce', action)
   // return { sessions: [] }
   switch (action.type) {
     case ADDSESSION:
       let sessions = [...state.sessions]
       const existing = sessions.findIndex(
-        s => s.started === action.session.started
+        s =>
+          s.started === action.session.started && s.type === action.session.type
       )
       if (existing !== -1) {
         sessions.splice(existing, 1)

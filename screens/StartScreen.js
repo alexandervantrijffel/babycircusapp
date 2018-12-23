@@ -16,6 +16,7 @@ import { DateTime, Duration } from 'luxon'
 import { toTime, formatDuration } from '../lib/timehelpers'
 import Row from '../components/grid/row'
 import { Icon } from 'react-native-elements'
+import BreastBadge from '../components/badge/breast'
 
 class Timer extends React.Component {
   state = { since: 0 }
@@ -40,9 +41,6 @@ class Timer extends React.Component {
         {this.state.since != 0 && (
           <View style={{ flex: 1, flexDirection: 'row' }}>
             <Text>{this.state.since} ago</Text>
-            {lastSession.source && (
-              <Text> {lastSession.source.toLowerCase()}</Text>
-            )}
           </View>
         )}
       </View>
@@ -58,7 +56,6 @@ const StatusOverview = ({ type, title, label, sessions, navigate }) => {
   let last = null
   if (filt.length) {
     last = filt.slice(-1)[0]
-    console.log('last', last)
   }
   return (
     <Row>
@@ -83,6 +80,9 @@ const StatusOverview = ({ type, title, label, sessions, navigate }) => {
           </View>
         )}
       </View>
+      {last.source && (
+        <BreastBadge source={last.source} wrapperStyle={{ paddingTop: 24 }} />
+      )}
       <View style={{ paddingTop: 24, width: 40 }}>
         <TouchableNativeFeedback
           onPress={() => navigate('History', { type })}

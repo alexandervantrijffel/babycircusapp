@@ -16,7 +16,7 @@ import { addSession, forgetSession } from '../reducers'
 import { toTime, formatDuration } from '../lib/timehelpers'
 import Row from '../components/grid/row'
 import { ButtonGroup } from 'react-native-elements'
-
+import BreastBadge from '../components/badge/breast'
 class RegisterScreen extends React.Component {
   static navigationOptions = {
     title: 'Baby Circus > Register',
@@ -60,8 +60,8 @@ class RegisterScreen extends React.Component {
       ended: updatedState.ended.toISOString()
     }
     if (typeof updatedState.selectedSource !== 'undefined') {
-      let source = 'Left breast'
-      if (updatedState.selectedSource == 1) source = 'Right breast'
+      let source = 'LeftBreast'
+      if (updatedState.selectedSource == 1) source = 'RightBreast'
       session.source = source
     }
     // store dates in ISO string, this is how they are rehydrated,
@@ -77,8 +77,18 @@ class RegisterScreen extends React.Component {
       duration = Duration.fromMillis(timeDiff)
     }
     const hasCompleted = started && ended
-    const component1 = () => <Text>Left breast</Text>
-    const component2 = () => <Text>Right breast</Text>
+    const component1 = () => (
+      <Row>
+        <BreastBadge source='LeftBreast' />
+        <Text style={{ marginLeft: 12 }}>Left breast</Text>
+      </Row>
+    )
+    const component2 = () => (
+      <Row>
+        <BreastBadge source='RightBreast' />
+        <Text style={{ marginLeft: 12 }}>Right breast</Text>
+      </Row>
+    )
     const buttons = [{ element: component1 }, { element: component2 }]
     return (
       <View style={styles.container}>
