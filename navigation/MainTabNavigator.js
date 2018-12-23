@@ -8,12 +8,14 @@ import {
 import TabBarIcon from '../components/TabBarIcon'
 import StartScreen from '../screens/StartScreen'
 import RegisterScreen from '../screens/RegisterScreen'
+import HistoryScreen from '../screens/HistoryScreen'
 import LinksScreen from '../screens/LinksScreen'
 import SettingsScreen from '../screens/SettingsScreen'
 
 const StartStack = createStackNavigator({
   Start: StartScreen,
-  Register: RegisterScreen
+  Register: RegisterScreen,
+  History: HistoryScreen
 })
 
 StartStack.navigationOptions = {

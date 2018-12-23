@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  TouchableNativeFeedback,
   View,
   WebView
 } from 'react-native'
@@ -14,6 +15,7 @@ import { connect } from 'react-redux'
 import { DateTime, Duration } from 'luxon'
 import { toTime, formatDuration } from '../lib/timehelpers'
 import Row from '../components/grid/row'
+import { Icon } from 'react-native-elements'
 
 class Timer extends React.Component {
   state = { since: 0 }
@@ -47,11 +49,12 @@ class Timer extends React.Component {
     )
   }
 }
+
 const StatusOverview = ({ type, title, label, sessions, navigate }) => {
   let d = DateTime.utc().minus({ days: 1 })
   const filt = sessions
     .filter(s => s.type === type && DateTime.fromISO(s.ended) > d)
-    .sort((a, b) => a.ended - b.ended)
+    .sort((a, b) => DateTime.fromISO(a.ended) - DateTime.fromISO(b.ended))
   let last = null
   if (filt.length) {
     last = filt.slice(-1)[0]
@@ -70,7 +73,7 @@ const StatusOverview = ({ type, title, label, sessions, navigate }) => {
           />
         </View>
       </View>
-      <View style={{ width: '65%', paddingTop: 18 }}>
+      <View style={{ paddingTop: 18, flex: 1, flexDirection: 'row' }}>
         {last && (
           <View style={{ left: 20, height: 40 }}>
             <Timer type={type} lastSession={last} />
@@ -79,6 +82,14 @@ const StatusOverview = ({ type, title, label, sessions, navigate }) => {
             </Text>
           </View>
         )}
+      </View>
+      <View style={{ paddingTop: 24, width: 40 }}>
+        <TouchableNativeFeedback
+          onPress={() => navigate('History', { type })}
+          background={TouchableNativeFeedback.SelectableBackground()}
+        >
+          <Icon name='more-vert' />
+        </TouchableNativeFeedback>
       </View>
     </Row>
   )
