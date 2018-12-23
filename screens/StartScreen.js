@@ -11,7 +11,7 @@ import {
   WebView
 } from 'react-native'
 import { connect } from 'react-redux'
-import { Duration } from 'luxon'
+import { DateTime, Duration } from 'luxon'
 import { toTime, formatDuration } from '../lib/timehelpers'
 import Row from '../components/grid/row'
 
@@ -33,7 +33,7 @@ class Timer extends React.Component {
   }
   render () {
     return (
-      <View style={{ left: 20, flex: 1 }}>
+      <View style={{ flex: 1 }}>
         {this.state.since != 0 && (
           <View style={{ flex: 1, flexDirection: 'row' }}>
             <Text style={{ minWidth: 100 }}>Last {this.props.type}:</Text>
@@ -44,10 +44,10 @@ class Timer extends React.Component {
     )
   }
 }
-
 const StatusOverview = ({ type, title, label, sessions, navigate }) => {
+  let d = DateTime.utc().minus({ days: 1 })
   const filt = sessions
-    .filter(s => s.type === type)
+    .filter(s => s.type === type && DateTime.fromISO(s.ended) > d)
     .sort((a, b) => a.ended - b.ended)
   let last = null
   if (filt.length) {
@@ -66,8 +66,15 @@ const StatusOverview = ({ type, title, label, sessions, navigate }) => {
           />
         </View>
       </View>
-      <View style={{ width: '60%', paddingTop: 28 }}>
-        {last && <Timer type={type} lastSession={last} />}
+      <View style={{ width: '60%', paddingTop: 18 }}>
+        {last && (
+          <View style={{ left: 20, height: 40 }}>
+            <Timer type={type} lastSession={last} />
+            <Text>
+              24H {filt.length} time{filt.length > 1 ? 's' : ''}
+            </Text>
+          </View>
+        )}
       </View>
     </Row>
   )

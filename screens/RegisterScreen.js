@@ -39,11 +39,12 @@ class RegisterScreen extends React.Component {
       (this.props.navigation.state.params &&
         this.props.navigation.state.params.type) ||
       'feed'
-    console.log('type session', type)
+    // store dates in ISO string, this is how they are rehydrated,
+    // so store with the format as that they are rehydrated for consistent processing
     this.props.addSession({
       type,
-      started: this.state.started,
-      ended
+      started: this.state.started.toISOString(),
+      ended: ended.toISOString()
     })
   }
   onForget = () => {
