@@ -17,36 +17,7 @@ import { toTime, formatDuration } from '../lib/timehelpers'
 import Row from '../components/grid/row'
 import { Icon } from 'react-native-elements'
 import BreastBadge from '../components/badge/breast'
-
-class Timer extends React.Component {
-  state = { since: 0 }
-  timer = 0
-  componentDidMount () {
-    if (this.timer == 0) {
-      this.timer = setInterval(this.onTick, 1000)
-    }
-  }
-  onTick = () => {
-    if (!this.props.lastSession) return
-    const diff = new Date() - new Date(this.props.lastSession.ended)
-    const duration = formatDuration(Duration.fromMillis(diff))
-    if (duration !== this.state.since) {
-      this.setState({ since: duration })
-    }
-  }
-  render () {
-    const { lastSession } = this.props
-    return (
-      <View style={{ flex: 1 }}>
-        {this.state.since != 0 && (
-          <View style={{ flex: 1, flexDirection: 'row' }}>
-            <Text>{this.state.since} ago</Text>
-          </View>
-        )}
-      </View>
-    )
-  }
-}
+import Timer from '../components/timer'
 
 const StatusOverview = ({ type, title, label, sessions, navigate }) => {
   let d = DateTime.utc().minus({ days: 1 })
@@ -73,7 +44,7 @@ const StatusOverview = ({ type, title, label, sessions, navigate }) => {
       <View style={{ paddingTop: 18, flex: 1, flexDirection: 'row' }}>
         {last && (
           <View style={{ left: 20, height: 40 }}>
-            <Timer type={type} lastSession={last} />
+            <Timer lastSession={last} />
             <Text>
               {filt.length} time{filt.length > 1 ? 's' : ''} last 24H
             </Text>

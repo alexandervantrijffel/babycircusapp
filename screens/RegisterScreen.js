@@ -5,7 +5,6 @@ import {
   Platform,
   ScrollView,
   StyleSheet,
-  Text,
   TouchableOpacity,
   View,
   WebView
@@ -15,8 +14,34 @@ import { connect } from 'react-redux'
 import { addSession, forgetSession } from '../reducers'
 import { toTime, formatDuration } from '../lib/timehelpers'
 import Row from '../components/grid/row'
-import { ButtonGroup } from 'react-native-elements'
+import { ButtonGroup, Icon, Text, Tile } from 'react-native-elements'
 import BreastBadge from '../components/badge/breast'
+import Timer from '../components/timer'
+
+const HistoryView = ({ lastSession }) => (
+  <View
+    style={{
+      width: '50%',
+      height: 40
+    }}
+  >
+    {lastSession && (
+      <View
+        style={{
+          flexDirection: 'row',
+          paddingTop: 8
+        }}
+      >
+        <Icon name='access-time' size={28} iconStyle={{ marginLeft: 40 }} />
+        <Timer
+          lastSession={lastSession}
+          style={{ marginLeft: 12, paddingTop: 4 }}
+        />
+      </View>
+    )}
+  </View>
+)
+
 class RegisterScreen extends React.Component {
   static navigationOptions = {
     title: 'Baby Circus > Register',
@@ -90,6 +115,28 @@ class RegisterScreen extends React.Component {
       </Row>
     )
     const buttons = [{ element: component1 }, { element: component2 }]
+
+    const filt = this.props.sessions
+      .filter(s => s.type === this.type)
+      .sort((a, b) => DateTime.fromISO(b.ended) - DateTime.fromISO(a.ended))
+
+    let lastLeft = null
+    for (var s of filt) {
+      if (s.type === this.type && s.source === 'LeftBreast') {
+        lastLeft = s
+        break
+      }
+    }
+    let lastRight = null
+    for (var s of filt) {
+      console.log('testing', s)
+      if (s.type === this.type && s.source === 'RightBreast') {
+        lastRight = s
+        break
+      }
+    }
+
+    const showLastContainer = !!lastLeft || !!lastRight
     return (
       <View style={styles.container}>
         {this.type === 'feed' && (
@@ -97,9 +144,17 @@ class RegisterScreen extends React.Component {
             <ButtonGroup
               onPress={this.onSourcePress}
               buttons={buttons}
-              containerStyle={{ flex: 1 }}
+              containerStyle={{ flex: 1, height: 60 }}
               selectedIndex={this.state.selectedSource}
+              buttonStyle={{ backgroundColor: '#A0A0A0' }}
+              selectedButtonStyle={{ backgroundColor: '#FFF' }}
             />
+          </Row>
+        )}
+        {showLastContainer && (
+          <Row style={{ marginHorizontal: 12 }}>
+            <HistoryView lastSession={lastLeft} />
+            <HistoryView lastSession={lastRight} />
           </Row>
         )}
         <Row>

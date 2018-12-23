@@ -1,5 +1,9 @@
 import React from 'react'
 import { View } from 'react-native'
-export default ({ children }) => (
-  <View style={{ flexDirection: 'row', borderWidth: 0 }}>{children}</View>
-)
+export default ({ children, style }) => {
+  let st = { flexDirection: 'row', borderWidth: 0 }
+  if (st) {
+    st = Object.assign({}, st, style)
+  }
+  return <View style={st}>{children}</View>
+}
