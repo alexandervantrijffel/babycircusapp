@@ -7,14 +7,14 @@ import {
 
 import TabBarIcon from '../components/TabBarIcon'
 import StartScreen from '../screens/StartScreen'
-import RegisterScreen from '../screens/RegisterScreen'
+import RecordScreen from '../screens/RecordScreen'
 import HistoryScreen from '../screens/HistoryScreen'
 import LinksScreen from '../screens/LinksScreen'
 import SettingsScreen from '../screens/SettingsScreen'
 
 const StartStack = createStackNavigator({
   Start: StartScreen,
-  Register: RegisterScreen,
+  Record: RecordScreen,
   History: HistoryScreen
 })
 

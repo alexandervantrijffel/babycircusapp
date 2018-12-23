@@ -11,10 +11,8 @@ import { Button, ListItem, Overlay, Text } from 'react-native-elements'
 import { DateTime } from 'luxon'
 import { isoToDateTime, formatDuration } from '../lib/timehelpers'
 import { getVal } from '../components/badge/breast'
+import { capitalizeFirstLetter } from '../lib/strings'
 
-function capitalizeFirstLetter (string) {
-  return string.charAt(0).toUpperCase() + string.slice(1)
-}
 class HistoryScreen extends React.Component {
   static navigationOptions = {
     title: 'Baby Circus -> History',

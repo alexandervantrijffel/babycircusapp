@@ -33,7 +33,7 @@ const StatusOverview = ({ type, title, label, sessions, navigate }) => {
       <View style={{ width: '35%' }}>
         <View style={styles.buttonContainer}>
           <Button
-            onPress={() => navigate('Register', { type })}
+            onPress={() => navigate('Record', { type })}
             title={title}
             color='#e3e0cf'
             accessibilityLabel={label}
@@ -86,28 +86,28 @@ class StartScreen extends React.Component {
         <StatusOverview
           type='feed'
           title='Feed'
-          label='Register feeding'
+          label='Record meal'
           sessions={sessions}
           navigate={navigate}
         />
         <StatusOverview
           type='diaper'
           title='Diaper'
-          label='Register diaper change'
+          label='Record diaper change'
           sessions={sessions}
           navigate={navigate}
         />
         <StatusOverview
           type='sleep'
           title='Sleep'
-          label='Register sleep'
+          label='Record sleep'
           sessions={sessions}
           navigate={navigate}
         />
         <StatusOverview
           type='massage'
           title='Massage'
-          label='Register massage'
+          label='Record massage'
           sessions={sessions}
           navigate={navigate}
         />

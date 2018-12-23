@@ -17,6 +17,7 @@ import Row from '../components/grid/row'
 import { ButtonGroup, Icon, Text, Tile } from 'react-native-elements'
 import BreastBadge from '../components/badge/breast'
 import Timer from '../components/timer'
+import { capitalizeFirstLetter } from '../lib/strings'
 
 const HistoryView = ({ lastSession }) => (
   <View
@@ -44,7 +45,7 @@ const HistoryView = ({ lastSession }) => (
 
 class RegisterScreen extends React.Component {
   static navigationOptions = {
-    title: 'Baby Circus > Register',
+    title: 'Baby Circus > Record',
     headerStyle: {
       backgroundColor: '#c0dfd9'
     },
@@ -129,7 +130,6 @@ class RegisterScreen extends React.Component {
     }
     let lastRight = null
     for (var s of filt) {
-      console.log('testing', s)
       if (s.type === this.type && s.source === 'RightBreast') {
         lastRight = s
         break
@@ -137,8 +137,23 @@ class RegisterScreen extends React.Component {
     }
 
     const showLastContainer = !!lastLeft || !!lastRight
+    let activityTitle = this.type
+    switch (this.type) {
+      case 'diaper':
+        activityTitle = 'diaper change'
+        break
+
+      case 'feed':
+        activityTitle = 'meal'
+    }
     return (
       <View style={styles.container}>
+        <Text
+          h4
+          style={{ marginHorizontal: 42, marginBottom: 16, marginTop: 24 }}
+        >
+          Record {activityTitle}
+        </Text>
         {this.type === 'feed' && (
           <Row>
             <ButtonGroup
