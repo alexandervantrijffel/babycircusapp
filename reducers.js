@@ -3,9 +3,17 @@ export default function reducer (state = { sessions: [] }, action) {
   // return { sessions: [] }
   switch (action.type) {
     case ADDSESSION:
+      let sessions = [...state.sessions]
+      const existing = sessions.findIndex(
+        s => s.started === action.session.started
+      )
+      if (existing !== -1) {
+        sessions.splice(existing, 1)
+      }
+      sessions.push(action.session)
       return {
         ...state,
-        sessions: [...state.sessions, action.session]
+        sessions
       }
     case FORGETSESSION:
       return {
