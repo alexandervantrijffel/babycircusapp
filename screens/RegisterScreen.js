@@ -15,6 +15,7 @@ import { connect } from 'react-redux'
 import { addSession, forgetSession } from '../reducers'
 import { toTime, formatDuration } from '../lib/timehelpers'
 import Row from '../components/grid/row'
+import { ButtonGroup } from 'react-native-elements'
 
 class RegisterScreen extends React.Component {
   static navigationOptions = {
@@ -29,27 +30,43 @@ class RegisterScreen extends React.Component {
       flex: 1
     }
   }
+  type = (this.props.navigation.state.params &&
+    this.props.navigation.state.params.type) ||
+    'feed' // only for dev
   state = {}
   onEnd = () => {
-    ended = new Date()
-    this.setState({
-      ended
-    })
-    const type =
-      (this.props.navigation.state.params &&
-        this.props.navigation.state.params.type) ||
-      'feed'
-    // store dates in ISO string, this is how they are rehydrated,
-    // so store with the format as that they are rehydrated for consistent processing
-    this.props.addSession({
-      type,
-      started: this.state.started.toISOString(),
-      ended: ended.toISOString()
-    })
+    const upd = {
+      ended: new Date()
+    }
+    this.setState(upd)
+    this.reportSession(upd)
+  }
+  onSourcePress = i => {
+    const upd = { selectedSource: i }
+    this.setState(upd)
+    if (this.state.ended) {
+      this.reportSession(upd)
+    }
   }
   onForget = () => {
     this.setState({ started: null, ended: null })
     this.props.forgetSession()
+  }
+  reportSession = stateUpdates => {
+    const updatedState = Object.assign({}, this.state, stateUpdates)
+    let session = {
+      type: this.type,
+      started: updatedState.started.toISOString(),
+      ended: updatedState.ended.toISOString()
+    }
+    if (typeof updatedState.selectedSource !== 'undefined') {
+      let source = 'Left breast'
+      if (updatedState.selectedSource == 1) source = 'Right breast'
+      session.source = source
+    }
+    // store dates in ISO string, this is how they are rehydrated,
+    // so store with the format as that they are rehydrated for consistent processing
+    this.props.addSession(session)
   }
   render () {
     const { navigate } = this.props.navigation
@@ -60,8 +77,21 @@ class RegisterScreen extends React.Component {
       duration = Duration.fromMillis(timeDiff)
     }
     const hasCompleted = started && ended
+    const component1 = () => <Text>Left breast</Text>
+    const component2 = () => <Text>Right breast</Text>
+    const buttons = [{ element: component1 }, { element: component2 }]
     return (
       <View style={styles.container}>
+        {this.type === 'feed' && (
+          <Row>
+            <ButtonGroup
+              onPress={this.onSourcePress}
+              buttons={buttons}
+              containerStyle={{ flex: 1 }}
+              selectedIndex={this.state.selectedSource}
+            />
+          </Row>
+        )}
         <Row>
           <View style={{ width: '50%' }}>
             {!started && (

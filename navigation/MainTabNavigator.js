@@ -13,7 +13,7 @@ import SettingsScreen from '../screens/SettingsScreen'
 
 const StartStack = createStackNavigator({
   Start: StartScreen,
-  Register: RegisterScreen
+  Register: RegisterScreen,
 })
 
 StartStack.navigationOptions = {

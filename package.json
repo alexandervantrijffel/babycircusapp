@@ -26,6 +26,7 @@
     "react-apollo": "^2.3.3",
     "react-native": "https://github.com/expo/react-native/archive/sdk-31.0.0.tar.gz",
     "react-native-cli": "^2.0.1",
+    "react-native-elements": "^0.19.1",
     "react-native-push-notification-popup": "^1.1.1",
     "react-native-render-html": "^3.10.0",
     "react-native-webview": "^2.14.3",

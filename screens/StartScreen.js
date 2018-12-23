@@ -32,12 +32,15 @@ class Timer extends React.Component {
     }
   }
   render () {
+    const { lastSession } = this.props
     return (
       <View style={{ flex: 1 }}>
         {this.state.since != 0 && (
           <View style={{ flex: 1, flexDirection: 'row' }}>
-            <Text style={{ minWidth: 100 }}>Last {this.props.type}:</Text>
             <Text>{this.state.since} ago</Text>
+            {lastSession.source && (
+              <Text> {lastSession.source.toLowerCase()}</Text>
+            )}
           </View>
         )}
       </View>
@@ -52,10 +55,11 @@ const StatusOverview = ({ type, title, label, sessions, navigate }) => {
   let last = null
   if (filt.length) {
     last = filt.slice(-1)[0]
+    console.log('last', last)
   }
   return (
     <Row>
-      <View style={{ width: '40%' }}>
+      <View style={{ width: '35%' }}>
         <View style={styles.buttonContainer}>
           <Button
             onPress={() => navigate('Register', { type })}
@@ -66,12 +70,12 @@ const StatusOverview = ({ type, title, label, sessions, navigate }) => {
           />
         </View>
       </View>
-      <View style={{ width: '60%', paddingTop: 18 }}>
+      <View style={{ width: '65%', paddingTop: 18 }}>
         {last && (
           <View style={{ left: 20, height: 40 }}>
             <Timer type={type} lastSession={last} />
             <Text>
-              24H {filt.length} time{filt.length > 1 ? 's' : ''}
+              {filt.length} time{filt.length > 1 ? 's' : ''} last 24H
             </Text>
           </View>
         )}
