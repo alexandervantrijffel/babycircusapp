@@ -22,11 +22,13 @@ import Timer from '../components/timer'
 const StatusOverview = ({ type, title, label, sessions, navigate }) => {
   let d = DateTime.utc().minus({ days: 1 })
   const filt = sessions
-    .filter(s => s.type === type && DateTime.fromISO(s.ended) > d)
+    .filter(s => s.type === type)
     .sort((a, b) => DateTime.fromISO(a.ended) - DateTime.fromISO(b.ended))
   let last = null
+  let timesLast24H = 0
   if (filt.length) {
     last = filt.slice(-1)[0]
+    timesLast24H = filt.filter(s => DateTime.fromISO(s.ended) > d).length
   }
   return (
     <Row>
@@ -46,7 +48,7 @@ const StatusOverview = ({ type, title, label, sessions, navigate }) => {
           <View style={{ left: 20, height: 40 }}>
             <Timer lastSession={last} />
             <Text>
-              {filt.length} time{filt.length > 1 ? 's' : ''} last 24H
+              {timesLast24H} time{timesLast24H !== 1 ? 's' : ''} last 24H
             </Text>
           </View>
         )}
