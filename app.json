@@ -27,7 +27,13 @@
       "supportsTablet": true
     },
    "android": {
-      "package": "com.structura.babycircus"
+      "package": "com.structura.babycircus",
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "CAMERA",
+        "VIBRATE",
+        "com.name.name.permission.C2D_MESSAGE"
+      ],
     }
   }
 }

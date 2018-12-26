@@ -1,3 +1,14 @@
+import PostToEventSink from './lib/posteventtoeventsink'
+import GetBabyID from './lib/babyid'
+import { DateTime } from 'luxon'
+const resolveBabyID = () => {
+  const date = DateTime.fromObject({
+    year: 2018,
+    month: 12,
+    day: 27
+  }).toFormat('yyyyLLdd')
+  return GetBabyID('Julian', date)
+}
 export default function reducer (state = { sessions: [] }, action) {
   // console.log('onReduce', action)
   // return { sessions: [] }
@@ -11,12 +22,38 @@ export default function reducer (state = { sessions: [] }, action) {
       if (existing !== -1) {
         sessions.splice(existing, 1)
       }
-      sessions.push(action.session)
+      const payload = Object.assign({}, action.session, {
+        babyID: resolveBabyID()
+      })
+      // console.log('payload', payload)
+      sessions.push(payload)
+
+      const eventName = existing === -1 ? 'SessionRecorded' : 'SessionUpdated'
+      PostToEventSink(
+        eventName,
+        action.session,
+        s => console.log(`Post ${eventName} to server succeeded`),
+        e => console.log(`Post ${eventName} to server failed`, e)
+      )
       return {
         ...state,
         sessions
       }
     case FORGETSESSION:
+      const forgottenPayload = Object.assign(
+        {},
+        state.sessions[state.sessions.length - 1],
+        {
+          babyID: resolveBabyID()
+        }
+      )
+      console.log('payload', forgottenPayload)
+      PostToEventSink(
+        'SessionForgotten',
+        payload,
+        s => console.log(`Post SessionForgotten to server succeeded', s`),
+        e => console.log(`Post Sessionforgotten to server failed`, e)
+      )
       return {
         ...state,
         sessions: state.sessions.slice(0, state.sessions.length - 1)
