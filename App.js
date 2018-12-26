@@ -10,7 +10,7 @@ import { persistStore, persistReducer } from 'redux-persist'
 import { PersistGate } from 'redux-persist/integration/react'
 import storage from 'redux-persist/lib/storage'
 import rootReducer from './reducers'
-
+import Subscriptions from './lib/subscriptions'
 const persistConfig = {
   key: 'root',
   storage
@@ -44,8 +44,9 @@ export default class App extends React.Component {
           loading={<Text>Loading store...</Text>}
           persistor={persistor}
         >
-          <InitApollo>
+          <InitApollo store={store}>
             <View style={styles.container}>
+              <Subscriptions />
               {Platform.OS === 'ios' && <StatusBar barStyle='default' />}
               <AppNavigator />
             </View>

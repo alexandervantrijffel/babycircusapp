@@ -50,9 +50,7 @@ export default class HomeScreen extends React.Component {
   }
   componentDidMount () {
     this.popup.show({
-      onPress: function () {
-        console.log('Pressed')
-      },
+      onPress: function () {},
       // appIconSource: require('./assets/icon.jpg'),
       appTitle: 'Notification',
       // timeText: 'Now',
