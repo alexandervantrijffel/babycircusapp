@@ -31,6 +31,7 @@ export default function reducer (state = { sessions: [] }, action) {
       const eventName = existing === -1 ? 'SessionRecorded' : 'SessionUpdated'
       PostToEventSink(
         eventName,
+        state.user,
         action.session,
         s => console.log(`Post ${eventName} to server succeeded`),
         e => console.log(`Post ${eventName} to server failed`, e)
@@ -50,6 +51,7 @@ export default function reducer (state = { sessions: [] }, action) {
       console.log('payload', forgottenPayload)
       PostToEventSink(
         'SessionForgotten',
+        state.user,
         payload,
         s => console.log(`Post SessionForgotten to server succeeded', s`),
         e => console.log(`Post Sessionforgotten to server failed`, e)
@@ -57,6 +59,12 @@ export default function reducer (state = { sessions: [] }, action) {
       return {
         ...state,
         sessions: state.sessions.slice(0, state.sessions.length - 1)
+      }
+
+    case STOREUSERINFO:
+      return {
+        ...state,
+        user: action.payload.user
       }
     // "type": "persist/REHYDRATE"
     default:
@@ -66,9 +74,14 @@ export default function reducer (state = { sessions: [] }, action) {
 
 const ADDSESSION = 'babycircus/sessions/add'
 const FORGETSESSION = 'babycircus/sessions/forget'
+const STOREUSERINFO = 'babycircus/storeuserinfo'
 export const addSession = session => {
   return { type: ADDSESSION, session }
 }
 export const forgetSession = () => {
   return { type: FORGETSESSION }
+}
+export const storeUserInfo = name => {
+  const payload = { user: name }
+  return { type: STOREUSERINFO, payload }
 }

@@ -11,11 +11,13 @@ import RecordScreen from '../screens/RecordScreen'
 import HistoryScreen from '../screens/HistoryScreen'
 import LinksScreen from '../screens/LinksScreen'
 import SettingsScreen from '../screens/SettingsScreen'
+import GetUserInfoScreen from '../screens/GetUserInfoScreen'
 
 const StartStack = createStackNavigator({
   Start: StartScreen,
   Record: RecordScreen,
-  History: HistoryScreen
+  History: HistoryScreen,
+  GetUserInfo: GetUserInfoScreen
 })
 
 StartStack.navigationOptions = {

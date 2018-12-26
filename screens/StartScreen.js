@@ -82,10 +82,16 @@ class StartScreen extends React.Component {
       flex: 1
     }
   }
+  componentDidMount () {
+    if (!this.props.user) {
+      this.props.navigation.navigate('GetUserInfo')
+    }
+  }
   render () {
     const { navigation: { navigate }, sessions } = this.props
     return (
       <View style={styles.container}>
+        <Text>Welcome {this.props.user}</Text>
         <StatusOverview
           type='feed'
           title='Feed'
@@ -122,14 +128,15 @@ class StartScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#e9ece5',
-    flex: 1
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingVertical: 20
   },
   buttonContainer: {
     borderWidth: 1,
     borderColor: '#F0F0F0',
     borderRadius: 3,
     marginVertical: 20,
-    marginHorizontal: 20,
     // backgroundColor: '#b3c2bf',
     backgroundColor: '#e3e0cf',
     width: 120
@@ -139,8 +146,9 @@ const styles = StyleSheet.create({
   }
 })
 
-const mapStateToProps = ({ sessions }) => ({
-  sessions
+const mapStateToProps = ({ sessions, user }) => ({
+  sessions,
+  user
 })
 const mapDispatchToProps = {}
 export default connect(mapStateToProps, mapDispatchToProps)(StartScreen)
