@@ -27,6 +27,18 @@ class HistoryScreen extends React.Component {
     }
   }
   state = {}
+  getTitle = item => {
+    const isSameDate =
+      item.started &&
+      item.ended &&
+      DateTime.fromISO(item.started).toLocaleString(DateTime.DATE_SHORT) ===
+        DateTime.fromISO(item.ended).toLocaleString(DateTime.DATE_SHORT)
+    const ended = isSameDate
+      ? DateTime.fromISO(item.ended).toLocaleString(DateTime.TIME_SIMPLE)
+      : item.ended
+    return isoToDateTime(item.started) + (item.ended ? ' - ' + ended : '')
+  }
+
   render () {
     const type =
       (this.props.navigation.state.params &&
@@ -62,7 +74,7 @@ class HistoryScreen extends React.Component {
                 color: 'orange'
               },
               containerStyle: {
-                marginRight: 10
+                marginRight: -2
               }
             }
           }
@@ -70,19 +82,23 @@ class HistoryScreen extends React.Component {
           return (
             <ListItem
               key={i}
-              title={isoToDateTime(item.started)}
-              subtitle={formatDuration(
-                DateTime.fromISO(item.ended).diff(
-                  DateTime.fromISO(item.started)
+              title={this.getTitle(item)}
+              subtitle={
+                'Duration ' +
+                formatDuration(
+                  DateTime.fromISO(item.ended).diff(
+                    DateTime.fromISO(item.started)
+                  )
                 )
-              )}
-              leftIcon={{ name: 'person' }}
+              }
               badge={badge}
             />
           )
         })}
       </ScrollView>
     )
+    // <ListItem
+    // leftIcon={{ name: 'person' }}
   }
 }
 

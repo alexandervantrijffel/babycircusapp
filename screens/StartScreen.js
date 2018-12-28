@@ -120,6 +120,13 @@ class StartScreen extends React.Component {
           sessions={sessions}
           navigate={navigate}
         />
+        <StatusOverview
+          type='medication'
+          title='Medication'
+          label='Take medication'
+          sessions={sessions}
+          navigate={navigate}
+        />
       </View>
     )
   }

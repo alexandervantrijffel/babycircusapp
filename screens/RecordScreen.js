@@ -33,7 +33,7 @@ const HistoryView = ({ lastSession }) => (
           paddingTop: 8
         }}
       >
-        <Icon name='access-time' size={28} iconStyle={{ marginLeft: 40 }} />
+        <Icon name='access-time' size={28} iconStyle={{ marginLeft: 18 }} />
         <Timer
           lastSession={lastSession}
           style={{ marginLeft: 12, paddingTop: 4 }}
@@ -167,7 +167,7 @@ class RegisterScreen extends React.Component {
           </Row>
         )}
         {showLastContainer && (
-          <Row style={{ marginHorizontal: 12 }}>
+          <Row style={{ marginHorizontal: 0 }}>
             <HistoryView lastSession={lastLeft} />
             <HistoryView lastSession={lastRight} />
           </Row>
